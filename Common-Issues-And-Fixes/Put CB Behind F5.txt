@@ -1,0 +1,6 @@
+# When Adding A CB Server Behind An F5
+# You Will Have To Turn Off The Rewrite Engine
+# Every Upgrade Will Turn It Back On Breaking Your VIP
+# The Following Path Is Where You Will Turn It On/Off
+
+/etc/httpd/conf.d/wsgi.conf
