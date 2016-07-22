@@ -1,0 +1,6 @@
+#Locations
+/opt/cloudbolt/templates/cbadmin - CB Admin Page
+/opt/cloudbolt/templates/servers - Servers Page (Universal)
+
+#Update Static Files
+/opt/cloudbolt/manage.py collectstatic
