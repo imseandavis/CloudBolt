@@ -1,0 +1,15 @@
+1. If You want To Override The CB Logo, Add A Rule To This File: /var/opt/cloudbolt/proserv/static/css/customer.css
+
+#### COPY BELOW THIS LINE ####
+/* Override the CB logo in the top menu bar */
+#header-container .nav-header-tabs li[data-topnav="dashboard"] a {
+    background: url("//ihg.scene7.com/is/image/ihg/uhf_brand_new2-1?fmt=png-alpha") 50% 50% no-repeat;
+    /* Whatever is appropriate for your logo */
+    width: 80px;
+    background-size: inherit;
+}
+#### COPY ABOVE THIS LINE ###
+
+2. After You Save The File, Run The Following: /opt/cloudbolt/manage.py collectstatic
+
+3. Profit!
