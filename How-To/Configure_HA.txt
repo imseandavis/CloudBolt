@@ -1,0 +1,12 @@
+CloudBolt HA Configuration
+----------------------------------
+MySQL 5.1 Bind to external IP (Make sure to copy to config file)
+/var/opt/cloudbolt/settings_local.py (Update To Point To New CB Instance)
+
+Getting Second Server Up
+
+RSync
+- /var/opt/cloudbolt directory
+- /var/www/html/
+
+Setup Load Balancer (Sticky Sessions) Make Sure Session Cookie Persistance Is On
