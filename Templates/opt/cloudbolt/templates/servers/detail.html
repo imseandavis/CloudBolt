@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load infrastructure_tags %}
+{% load helper_tags %}
+{% block topnav %}servers{% endblock %}
+
+{% block content %}
+    <h1> Server {{ server.hostname }} </h1>
+
+    <div class="row">
+        <div class="col-sm-3 text-center">
+            {% server_card server %}
+
+            <h4>
+                {% if server.power_status|lower != 'suspended' %}
+                    Powered
+                {% endif %}
+                <span class="power-state {{ server.power_status|lower }}">
+                    {{ server.get_power_status_display|capfirst }}</span>
+            </h4>
+
+            {% include "servers/actions.html" %}
+        </div>
+
+        <div class="col-sm-9">
+            <div class="tabs">
+                <ul class="nav nav-boxed-tabs">
+                    <li class="active"><a href="#tab-details" data-toggle="tab">Details</a></li>
+                {% if can_add_disks %}
+                    <li><a href="#tab-disks" data-toggle="tab">Disks</a></li>
+                {% endif %}
+                {% if show_networks %}
+                    <li><a href="#tab-networks" data-toggle="tab">Networks</a></li>
+                {% endif %}
+                    <li><a href="#tab-parameters" data-toggle="tab">Parameters</a></li>
+                    <li><a href="#tab-jobs" data-toggle="tab">Jobs</a></li>
+                    <li><a href="#tab-history" data-toggle="tab">History</a></li>
+                {% if server.resource_handler.type_slug == "vmware" %}
+                    <li><a href="#tab-stats" data-toggle="tab">Stats</a></li>
+                {% endif %}
+                {% for tab_title, tab_url in connector_tabs.items %}
+                    <li>
+                        <a data-toggle="tab" href="#connector-{{ tab_title|slugify }}">{{ tab_title }}</a>
+                    </li>
+                {% endfor %}
+		    <li><a href="#tab-chef" data-toggle="tab">Chef</a></li>
+		    <li><a href="#tab-dash" data-toggle="tab">IHG Dash</a></li>
+                </ul>
+
+
+                <div class="tab-content">
+                    <div id="tab-details" class="active tab-pane">
+                        {% include 'servers/tab-details.html' %}
+                    </div>
+
+                    {% if can_add_disks %}
+                        <div id="tab-disks" class="tab-pane">
+                            {% include 'servers/tab-disks.html' %}
+                        </div>
+                    {% endif %}
+
+                    {% if show_networks %}
+                        <div id="tab-networks" class="tab-pane">
+                            {% include 'servers/tab-network.html' %}
+                        </div>
+                    {% endif %}
+
+                    <div id="tab-parameters" class="tab-pane">
+                        {% include 'servers/tab-parameters.html' %}
+                    </div>
+
+                    <div id="tab-jobs" class="tab-pane">
+                        {% include 'servers/tab-jobs.html' %}
+                    </div>
+
+                    <div id="tab-history" class="tab-pane">
+                        {% include 'common/tab-history.html' %}
+                    </div>
+
+                    {% if server.resource_handler.type_slug == "vmware" %}
+                        <div id="tab-stats" class="tab-pane">
+                            {% include 'servers/vmware-stats-intervals.html' %}
+                        </div>
+                    {% endif %}
+
+                    {% for tab_title, tab_url in connector_tabs.items %}
+                        <div
+                            id="connector-{{ tab_title|slugify }}"
+                            class="tab-pane"
+                            data-include={{ tab_url }}>
+                            <div class="spinner"></div>
+                        </div>
+		   {% endfor %}
+
+			<div id="tab-chef" class="tab-pane">
+                        	{% include 'servers/tab-chef.html' %}
+               		</div>
+
+			<div id="tab-dash" class="tab-pane">
+                        	{% include 'servers/tab-dash.html' %}
+                	</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block onReady %}
+    {# Disable the various buttons if this server is not in a 'good' state #}
+    {% if not server.can_be_modified %}
+        $('#power_action,' +
+          '#change_resources_action,' +
+          '#change_attributes_action,' +
+          '#clone_action,' +
+          '#install_action,' +
+          '#refresh_action,' +
+          '#list_flows_action,' +
+          '#uninstall_action').addClass('disabled');
+    {% endif %}
+
+    {% if not server.can_console %}
+        $('#console_action').addClass('disabled');
+    {% endif %}
+
+    {% if server.power_status == 'POWEROFF' %}
+        $('#install_action,' +
+          '#uninstall_action').addClass('disabled');
+    {% endif %}
+
+    {% if not server.can_be_decommissioned %}
+        $('#decommission_action').addClass('disabled');
+    {% endif %}
+{% endblock %}

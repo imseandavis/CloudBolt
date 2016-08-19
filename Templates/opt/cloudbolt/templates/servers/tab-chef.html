@@ -1,0 +1,11 @@
+{% comment %}
+This markup and javascript was pulled almost verbatim from the 
+jobs/list.html template, but the sAjaxSource includes a server_id arg.
+{% endcomment %}
+
+{% if server.resource_handler.type_slug == "centurylink" %}
+	<iframe src="https://customdash.com/api/chef/nodes.php?node={{ server.hostname }}.tld" width="100%" height="600" frameborder="0"></iframe>
+{% else %}
+	<iframe src="https://customdash.com/api/chef/nodes.php?node={{ server.hostname }}.othertld" width="100%" height="600" frameborder="0"></iframe>
+{% endif %}
+

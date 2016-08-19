@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load helper_tags %}
+{% load infrastructure_tags %}
+
+{% block topnav %}servers{% endblock %}
+
+{% block content %}
+
+    {% include "common/switcher_servers_services.html" %}
+
+    <h1>Servers</h1>
+
+    <div class="pull-left">
+        <div class="btn-toolbar">
+            {% new_server_button profile=profile %}
+
+            <span class="collapsed" data-toggle="collapse" data-target="#filters-panel">
+                <a class="btn btn-default" id="filters-panel-toggle">
+                    <span class="collapsed-indicator no-tooltip-affordance"></span>
+                    <span class="icon-filter"></span>
+                    <span class="filters-panel-toggle-btn-text">Show Filters</span>
+                    <span id="filtersInUse"></span>
+                </a>
+            </span>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div id="filters-panel" class="panel panel-default collapse">
+        <div class="panel-body" style="height: 190px;">
+        </div>
+    </div>
+
+    {% servers_table servers show=server_columns sort_by_column=2 source="/servers/json/" server_params_fn="c2.servers.addServerListFilters" server_response_callback="c2.servers.updateFiltersInUse" %}
+
+    <div id="action-dialog"></div>
+
+{% endblock content %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script src="{{ STATIC_URL }}js/custom/server-list.js"></script>
+{% endblock %}
