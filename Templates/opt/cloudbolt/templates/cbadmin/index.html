@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+{% load account_tags %}
+{% load appliance_tags %}
+{% load helper_tags %}
+{% load infrastructure_tags %}
+{% block topnav %}admin-index{% endblock %}
+
+{% block content %}
+
+<h1>
+  CloudBolt <span data-toggle="tooltip" class="no-tooltip-affordance" title="{{ 'Build '|add:cb_build }}">{{ cb_version }}</span> Administration
+</h1>
+
+{% comment %}
+    Should show a list of required actions or other important
+    information that superusers may need.
+{% endcomment %}
+
+{% spotlight_search_bar 'admin-spotlight' '#content' %}
+
+{% get_upgrade_message %}
+<div class="row">
+    <div class="col-xs-6">
+
+        <div class="panel panel-default">
+            <div class="panel-heading revealer">
+                <h3 data-toggle="collapse" data-target="#admin-panel-resources">
+                    <span class="revealable collapsed-indicator"></span>
+                    <i class="fa fa-cubes"></i>
+                    Resources &amp; Networks
+                </h3>
+            </div>
+            <div id="admin-panel-resources" class="panel-body collapse">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="{% url 'env_list' %}" data-spotlight>Environments</a>
+                    </li>
+                    <li><a href="{% url 'resourcehandler_list' %}"
+                        data-spotlight="aws amazon azure microsoft gce google ipmi kvm qemu openstack helion hp hpcloud rhev slayer redhat terremark verizon vcenter vsphere vmware xen">
+                        Resource Handlers</a>
+                    </li>
+                    <li><a href="{% url 'network_list' %}" data-spotlight>
+                        Networks</a>
+                    </li>
+                    {% if gp.enable_license_feature %}
+                        <li><a href="{% url 'license_pool_list' %}" data-spotlight>
+                            License Pools</a>
+                        </li>
+                    {% endif %}
+                    <li><a href="{% url 'resourcepool_list' %}" data-spotlight>
+                        CloudBolt Resource Pools</a>
+                    </li>
+                    {% comment %}
+                    disable network handlers option until we re-introduce support for
+                    NSX (and at that point, consider renaming this to "virtual
+                    networking" or "SDN"). At least one customer was confused by this option.
+
+                    {% if license.enable_network_handlers %}
+                    <a href="{% url 'networkhandler_list' %}">Network Handlers</a>
+                    {% else %} {# show admin what they are missing...perhaps they will license it #}
+                    <a href="#" class="disabled" title="Contact CloudBolt to license this feature">Network Handlers (not enabled)</a>
+                    {% endif %}
+                    {% endcomment %}
+                    <li>
+                        {% if license.enable_provisioning_engines %}
+                            <a href="{% url 'provengine_list' %}"
+                                data-spotlight="cobbler hpsa">
+                                Provisioning Engines</a>
+                        {% else %} {# show admin what they are missing...perhaps they will license it #}
+                            <a href="#" class="disabled" title="Contact CloudBolt to license this feature"
+                                data-spotlight="cobbler hpsa">
+                                Provisioning Engines (not enabled)</a>
+                        {% endif %}
+                    </li>
+                    <li>
+                        {% if license.enable_connectors %}
+                            <a href="{% url 'provider_list' %}"
+                                data-spotlight="chef docker puppet">
+                                Configuration Managers</a>
+                        {% else %} {# show admin what they are missing...perhaps they will license it #}
+                            <a href="#" class="disabled" title="Contact CloudBolt to license this feature"
+                                data-spotlight="chef docker puppet">
+                                Configuration Managers (not enabled)</a>
+                        {% endif %}
+                    </li>
+                    <li><a href="{% url 'ipam_detail' %}" data-spotlight="ipam infoblox">
+                        IP Management</a></li>
+                    <li><a href="{% url 'container_orchestrator_list' %}" data-spotlight="docker
+                    kubernetes container">
+                        Container Orchestrators <span class="badge">beta</span></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading revealer">
+                <h3 data-toggle="collapse" data-target="#admin-panel-orders">
+                    <span class="revealable collapsed-indicator"></span>
+                    <i class="fa fa-shopping-cart"></i>
+                    Orders
+                </h3>
+            </div>
+            <div id="admin-panel-orders" class="panel-body collapse">
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'osbuild_list' %}"
+                        data-spotlight="operating system windows linux template image ami">
+                        OS Builds</a></li>
+                    <li><a href="{% url 'customfields_list' %}"
+                        data-spotlight="orders">
+                        Parameters</a></li>
+                    <li><a href="{% url 'global_param_defaults' %}"
+                        data-spotlight>
+                        Global Parameter Defaults</a></li>
+                    <li><a href="{% url 'preconfigs_list' %}"
+                        data-spotlight="orders parameters">
+                        Preconfigurations</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading revealer">
+                <h3 data-toggle="collapse" data-target="#admin-panel-jobs">
+                    <span class="revealable collapsed-indicator"></span>
+                    <i class="fa fa-bolt"></i>
+                    Jobs
+                </h3>
+            </div>
+            <div id="admin-panel-jobs" class="panel-body collapse">
+                <ul class="recent-servers">
+                    <li>
+                        <div data-include="{% url 'recently_added_servers' %}"></div>
+                    </li>
+                </ul>
+
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'job_list' %}"
+                        data-spotlight="jobs">
+                        Job List</a></li>
+                    <li><a href="{% url 'job_stats_list' %}"
+                        data-spotlight="jobs">
+                        Job Statistics</a></li>
+                    <li><a href="{% url 'cit_list' %}"
+                        data-spotlight="cit tests">
+                        Continuous Infrastructure Testing</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-xs-6">
+
+        <div class="panel panel-default">
+            <div class="panel-heading revealer">
+                <h3 data-toggle="collapse" data-target="#admin-panel-users">
+                    <span class="revealable collapsed-indicator"></span>
+                    <i class="icon-user"></i>
+                    Users & Settings
+                </h3>
+            </div>
+            <div id="admin-panel-users" class="panel-body collapse">
+                <h4>Recent Users:</h4>
+                {% get_all_logged_in_users qty=12 size=64 %}
+
+                <div class="clearfix"></div>
+                <br/>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'user_list' %}"
+                        data-spotlight="profiles">
+                        Users</a></li>
+                    <li><a href="{% url 'portal_list' %}"
+                        data-spotlight="portals multi tenancy tenant customize colors theme">
+                        Branding</a></li>
+                    <li><a href="{% url 'ldap_settings_list' %}"
+                        data-spotlight="sso single sign-on active directory ad">
+                        LDAP Authentication Settings</a></li>
+                    <li><a href="{% url 'email_settings' %}"
+                        data-spotlight="smtp">
+                        Email Settings </a></li>
+                    <li><a href="{% url 'rates_admin' %}"
+                        data-spotlight="cost">
+                        Rates</a></li>
+                    <li><a href="{% url 'misc_settings' %}"
+                        data-spotlight="console social facebook twitter linkedin">
+                        Miscellaneous Settings</a></li>
+		    <li><a href="{% url 'custom_tabs' %}">
+                        Custom Tabs</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading revealer">
+                <h3 data-toggle="collapse" data-target="#admin-panel-orchestration">
+                    <span class="revealable collapsed-indicator"></span>
+                    <i class="fa fa-cogs"></i>
+                    Orchestration
+                </h3>
+            </div>
+            <div id="admin-panel-orchestration" class="panel-body collapse">
+                <ul class="list-unstyled">
+                    <li>
+                        <a href="{% url 'all_actions' %}" data-spotlight="">
+                            {% text_tooltip "Actions" "A powerful way to automate your infrastructure, actions are executable code in the form of CloudBolt plugins, scripts, flows, email hooks or webhooks." placement="right" width=400 hint=False %}
+                        </a>
+                    </li>
+                    {% include 'actions/action_category_admin_links.html' with license=license placement="right" %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading revealer">
+                <h3 data-toggle="collapse" data-target="#admin-panel-advanced">
+                    <span class="revealable collapsed-indicator"></span>
+                    <i class="fa fa-wrench"></i>
+                    CloudBolt
+                </h3>
+            </div>
+            <div id="admin-panel-advanced" class="panel-body collapse">
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'collect_all_logs' %}" target="_blank"
+                        data-spotlight>
+                        Download CB logs</a></li>
+                    <li><a href="{% url 'export_db' %}" target="_blank"
+                        data-spotlight>
+                        <span data-toggle="tooltip" class="no-tooltip-affordance" title="Dump the
+                         contents of the CloudBolt database as a zip. Can be useful for CB
+                         support.">
+                            Export & Download CB Database</a>
+                        </span>
+                    </li>
+                    <li><a href="{% url 'collect_application_dot_log' %}" target="_blank"
+                        data-spotlight>
+                        Download application.log</a></li>
+                    <li><a href="{% url 'collect_httpd_logs' %}" target="_blank"
+                        data-spotlight>
+                        Download Web Server Logs</a></li>
+                    <li><a href="{% url 'db_browser' %}"
+                        data-spotlight>
+                        Database Browser</a></li>
+                    <li><a href="{% url 'api' %}"
+                        data-spotlight="rest">
+                        API Browser</a></li>
+                    <li><a href="{% url 'product_license-detail' %}" data-spotlight="cloudbolt">
+                        Product License</a></li>
+                    <li><a href="{% url 'version_detail' %}" data-spotlight="cloudbolt upgrade
+                    version alpha beta rc release candidate">Version & Upgrade Info</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+
+{% block onReady %}
+    $('input[data-spotlight-search]').clearable();
+    c2.spotlight.init();
+    c2.collapsible.init('#content');
+{% endblock %}
