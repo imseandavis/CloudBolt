@@ -3,5 +3,5 @@
 
 
 #How To Open Shell Plus
-cd /opt/cloudbolt/
-/opt/cloudbolt/manage.py shell_plus
+#cd /opt/cloudbolt/
+#/opt/cloudbolt/manage.py shell_plus
