@@ -1,0 +1,18 @@
+#This script shows you how to kill all jobs of a certain status. All jobs will be set to cancelled IMMEDIATELY.
+#You can add additional statuses by changing the status='YOURSTATUSHERE' field.
+#This script was written to recover from the Cancel job bug in 6.1A1 - 6.1GA
+
+#Kill All Queued Jobs
+for job in Job.objects.filter(status='QUEUED'):
+    job.status = 'CANCELED'
+    job.save()
+
+#Kill All Pending Jobs
+for job in Job.objects.filter(status='PENDING'):
+    job.status = 'CANCELED'
+    job.save()
+
+#Kill All Running Jobs
+for job in Job.objects.filter(status='RUNNING'):
+    job.status = 'CANCELED'
+    job.save()
