@@ -1,0 +1,8 @@
+#This script shows you how to update approval policies.
+#For multiple approval policies, find a common group value and use it in the .get() method.
+#Approval Policy Is Set By Boolean
+
+#Update Approval Policy For An Individual Group
+g = Group.objects.get(id=100)
+g.allow_auto_approval = False
+g.save()
