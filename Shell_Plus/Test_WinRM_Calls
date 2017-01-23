@@ -15,7 +15,7 @@
 # winrm set winrm/config/service/auth @{Basic="true"} 
 # winrm set winrm/config/service @{AllowUnencrypted="true"}
 #
-#Keep in mind that all passwords and informaiton will be sent to the clien tin clear text format
+#Keep in mind that all passwords and information will be sent to the clien tin clear text format
 # See More At The Link Below
 # https://blogs.msdn.microsoft.com/powershell/2015/10/27/compromising-yourself-with-winrms-allowunencrypted-true/
 
@@ -24,7 +24,7 @@
 #This allows you to test basic calls
 import winrm
 server = Server.objects.last()
-session = winrm.Session('10.236.0.27', auth=('svrbuild', '1hgCamel0t'))
+session = winrm.Session('10.236.0.27', auth=('YOU_USERNAME_HERE', 'YOUR_PASSWORD_HERE'))
 cmd = r'if not exist "C:\Chef\trusted_certs" (mkdir "C:\chef\trusted_certs") else (echo Trusted Certs Directory Already Exists)'
 result = session.run_cmd(cmd)
 result.std_out
