@@ -1,0 +1,40 @@
+#Script Last Tested With CloudBolt Version 7.0 Alpha 4
+#Wrote This script to help in troubleshooting making WinRM calls so that oyu don't have to run
+#through the entire process of constructing a server and waiting for a specific hook point to run.
+#
+#This requires the user to spin a server that can be accessed form the Cloudbolt Server to WinRM
+#You can then run the script below to test your commands to verify proper operation.
+#
+#I have broken the below down into two secitons, one is a shorcut way of testing WinRM and the other
+#is exactly how CloudBolt makes the request so you will see the same success or failure outputs.
+#
+#In order for WinRM to work for Windows you will need to run the following three command on your
+#server templates.
+#
+# winrm set winrm/config/client/auth @{Basic="true"} 
+# winrm set winrm/config/service/auth @{Basic="true"} 
+# winrm set winrm/config/service @{AllowUnencrypted="true"}
+#
+#Keep in mind that all passwords and information will be sent to the clien tin clear text format
+# See More At The Link Below
+# https://blogs.msdn.microsoft.com/powershell/2015/10/27/compromising-yourself-with-winrms-allowunencrypted-true/
+
+
+#Manual WinRM Connection Test - run PowerShell Command (Deprecated)
+#This allows you to test basic calls
+import winrm
+server = Server.objects.last()
+session = winrm.Session('10.236.0.27', auth=('YOU_USERNAME_HERE', 'YOUR_PASSWORD_HERE'))
+cmd = r'if not exist "C:\Chef\trusted_certs" (mkdir "C:\chef\trusted_certs") else (echo Trusted Certs Directory Already Exists)'
+result = session.run_cmd(cmd)
+result.std_out
+result.std_err
+
+
+#Cloudbolt Native Connection Test - Run Powershell Command
+#This will provide a replica of the experience using the call directly through CloudBolt
+import winrm
+server = Server.objects.last()
+cmd = r'Write-Host "Put Your PowerShell Code Here"'
+result = server.execute_script(script_contents=cmd, run_with_sudo=True, timeout=600)
+result
