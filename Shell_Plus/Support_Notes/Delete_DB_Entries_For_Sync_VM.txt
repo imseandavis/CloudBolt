@@ -1,0 +1,20 @@
+
+When it deletes a batch of jobs, that's reflected in the Jobs list page.
+Have you inspected one of those not-completely-deleted jobs in shell_plus? That could shed light on the problem. Use tab completion to see the various properties on a job object.
+[1]: j = Job.objects.get(id=81115)
+[2]: j.children_jobs.count()
+[3]: j.parent_job
+
+I had thought that jobs with child jobs could be a culprit (job.children_jobs.all()) and was going to suggest deleting all the child jobs first, but that doesn't appear to be the problem in our lab. You may need to do some additional logging in the delete action to debug and get to the bottom of this. E.g. job.children_jobs.count() etc, to see if there is some correlation.
+It may help in debugging to only identify small batches of jobs at a time in the condition action, like so:
+# Limit the query to 20 rows at a time
+cit_jobs = Job.objects.filter(
+    type="functionaltest",
+    start_date__lt=delete_date).exclude(status="RUNNING")[:20]
+
+And have the delete action log each job ID as it loops over them:
+for job in cit_jobs:
+    has_children = job.children_jobs.count()
+    set_progress('Job {}: {} child jobs'.format(job.id, has_children))
+T
+hat way you can confirm that those are or are not being deleted.
