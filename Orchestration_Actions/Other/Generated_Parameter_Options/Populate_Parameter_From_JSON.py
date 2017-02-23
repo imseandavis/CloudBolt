@@ -1,4 +1,4 @@
-#This will allow you to populate a parameter with a tuple list from a api that ruturns JSON data.
+#This will allow you to populate a parameter with a tuple list from a api that returns JSON data.
 
 import requests
 import json
