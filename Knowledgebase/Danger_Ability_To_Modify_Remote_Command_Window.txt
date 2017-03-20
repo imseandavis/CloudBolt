@@ -1,0 +1,25 @@
+Its content is created by the set_progress calls, each one resulting in a row in the database.
+
+You can access these by:
+
+# a queryset of lines shown in the Results section
+job.progressmessage_set.all()
+
+
+Now, to modify or remove the message record that contains output from a remote script (green text on black background in the job details view):
+
+# There is usually only one of these per job.
+message = j.progressmessage_set.exclude(detailed_message='').first()
+
+# print all the lines of remote execution output
+print message.detailed_message
+
+# Clear the remote execution output
+message.detailed_message = ''
+message.save()
+
+# Or delete this message completely from the job's progress
+message.delete()
+
+I generally DO NOT recommend doing this because YOU MAY LOSE IMPORTANT INFORMATION.
+But if you know what you are doing, there are some pretty amazing things you can do with it.
