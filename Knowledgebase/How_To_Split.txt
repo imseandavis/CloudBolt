@@ -1,0 +1,6 @@
+Using the built-in Django filter slice (https://docs.djangoproject.com/en/1.9/ref/templates/builtins/#slice).
+It takes a list and returns part of it as another list, so you can use it to get a list that contains just the item you want
+and then use first to get that item out of the list.
+
+For example, to get the 2nd item: {{ val1-val2-val3 | split"-" | slice:"1:2" | first }}.
+After the split you'll have [val1, val2, val3], after the slice you'll have [val2], and after the first you'll end up with val2.
