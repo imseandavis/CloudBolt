@@ -1,0 +1,3 @@
+all email tamplates live in /opt/cloudbolt/templates/email/,
+you should copy whichever one you want to overwrite and save it in /var/opt/cloudbolt/proserv/templates/email.
+You can modify it and reference any attribute on the server
