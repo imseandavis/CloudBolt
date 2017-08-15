@@ -1,7 +1,7 @@
 # CloudBolt
 Everything CloudBolt!!
 
-#Update URLS
+Update URLS
 ------------
 http://downloads.cloudbolt.io/cloudbolt_ga_latest.json - GA Releases
 http://downloads.cloudbolt.io/cloudbolt_rc_latest.json - RC Releases
