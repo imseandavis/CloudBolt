@@ -1,6 +1,7 @@
 # CloudBolt
-Everything CloudBolt!!
+This is where I keep all things CloudBolt.
 
+<br><br>
 Update URLS
 ------------
 http://downloads.cloudbolt.io/cloudbolt_ga_latest.json - GA Releases <br>
